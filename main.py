@@ -8,7 +8,7 @@ from dataclasses import dataclass
 @dataclass
 class DiskLoading:
     """
-    Класс для измерения нагрузки на диск.
+    Класс для измерения нагрузки на диск с помощью действий над файлами.
     """
     file: str
     copy_file: str
