@@ -8,9 +8,9 @@ class DiskLoading:
     """
     Класс для измерения нагрузки на диск с помощью действий над файлами.
     """
-    def __init__(self, file: str, copy_path: str, attempts: int):
+    def __init__(self, file: str, attempts: int):
         self.file: str = file
-        self.copy_file: str = f"{copy_path}/{os.path.basename(file)}"
+        self.copy_file: str = f"{os.path.dirname(__file__)}/{os.path.basename(file)}"
         self.attempts: int = attempts
 
     def download_file(self) -> float:
@@ -79,7 +79,6 @@ class DiskLoading:
 
 disk_loading = DiskLoading(
     '/home/timur/sambashare/rzhd/rzhd_ktk/КТК 01-2022.xlsb',
-    f'{os.path.dirname(__file__)}',
     10
 )
 disk_loading.main()
