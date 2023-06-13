@@ -2,17 +2,16 @@ import os
 import csv
 import time
 import shutil
-from dataclasses import dataclass
 
 
-@dataclass
 class DiskLoading:
     """
     Класс для измерения нагрузки на диск с помощью действий над файлами.
     """
-    file: str
-    copy_file: str
-    attempts: int
+    def __init__(self, file: str, copy_path: str, attempts: int):
+        self.file: str = file
+        self.copy_file: str = f"{copy_path}/{os.path.basename(file)}"
+        self.attempts: int = attempts
 
     def download_file(self) -> float:
         """
@@ -61,7 +60,7 @@ class DiskLoading:
         """
         with open(f"{os.path.dirname(self.copy_file)}/results.csv", 'w', newline='') as file:
             writer: csv.writer = csv.writer(file)
-            writer.writerow(["Номер попытки", "Время скачивания", "Время чтения", "Время записи"])
+            writer.writerow(["Наименование файла", "Номер попытки", "Время скачивания", "Время чтения", "Время записи"])
             writer.writerows(results)
 
     def main(self) -> None:
@@ -74,13 +73,13 @@ class DiskLoading:
             download_time: float = self.download_file()
             write_time: float = self.create_file()
             read_time: float = self.read_file()
-            results.append([i, download_time, read_time, write_time])
+            results.append([os.path.basename(self.file), i, download_time, read_time, write_time])
         self.save_test_results(results)
         os.remove(self.copy_file)
 
 disk_loading = DiskLoading(
-    '/home/timur/Загрузки/ТОО ЗАПЧАСТЬТРЕЙД_выгрузка_из_reference_inn.xlsx',
-    f'{os.path.dirname(__file__)}/ТОО ЗАПЧАСТЬТРЕЙД_выгрузка_из_reference_inn.xlsx',
-    100
+    '/home/timur/sambashare/rzhd/rzhd_ktk/КТК 01-2022.xlsb',
+    f'{os.path.dirname(__file__)}',
+    10
 )
 disk_loading.main()
