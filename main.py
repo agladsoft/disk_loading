@@ -13,6 +13,18 @@ class DiskLoading:
         self.copy_file: str = f"{os.getcwd()}/{os.path.basename(file)}"
         self.attempts: int = attempts
 
+    def get_size(self, unit: str = 'bytes') -> float | int:
+        """
+        Получение размера файла.
+        :return: Получаем размер файла.
+        """
+        file_size: int = os.path.getsize(self.file)
+        exponents_map: dict = {'bytes': 0, 'kb': 1, 'mb': 2, 'gb': 3}
+        if unit not in exponents_map:
+            raise ValueError("Must select from ['bytes', 'kb', 'mb', 'gb']")
+        size: float = file_size / 1024 ** exponents_map[unit]
+        return int(size) if unit == 'bytes' else round(size, 3)
+
     def download_file(self) -> float:
         """
         Получение времени копирования файла.
@@ -31,7 +43,7 @@ class DiskLoading:
         chunk_size: int = 1024 * 1024  # 1 МБ
         with open(self.copy_file, 'wb') as file:
             data: bytes = b'\0' * chunk_size
-            remaining_bytes: int = os.stat(self.file).st_size
+            remaining_bytes: int = self.get_size()
             start_time: time = time.time()
             while remaining_bytes >= chunk_size:
                 file.write(data)
@@ -63,7 +75,8 @@ class DiskLoading:
             writer = csv.writer(file)
             if os.stat(file_path).st_size == 0:
                 writer.writerow(
-                    ["Наименование файла", "Номер попытки", "Время скачивания", "Время чтения", "Время записи"]
+                    ["Наименование файла", "Размер файла", "Номер попытки", "Время скачивания", "Время чтения",
+                     "Время записи"]
                 )
             writer.writerows(results)
 
@@ -77,12 +90,12 @@ class DiskLoading:
             download_time: float = self.download_file()
             write_time: float = self.create_file()
             read_time: float = self.read_file()
-            results.append([os.path.basename(self.file), i, download_time, read_time, write_time])
+            results.append([os.path.basename(self.file), self.get_size('mb'), i, download_time, read_time, write_time])
         self.save_test_results(results)
         os.remove(self.copy_file)
 
 disk_loading = DiskLoading(
     '/home/timur/sambashare/rzhd/rzhd_ktk/КТК 01-2022.xlsb',
-    10
+    1
 )
 disk_loading.main()
