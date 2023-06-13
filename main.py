@@ -10,7 +10,7 @@ class DiskLoading:
     """
     def __init__(self, file: str, attempts: int):
         self.file: str = file
-        self.copy_file: str = f"{os.path.dirname(__file__)}/{os.path.basename(file)}"
+        self.copy_file: str = f"{os.path.abspath(os.curdir)}/{os.path.basename(file)}"
         self.attempts: int = attempts
 
     def download_file(self) -> float:
