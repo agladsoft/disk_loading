@@ -10,7 +10,7 @@ class DiskLoading:
     """
     def __init__(self, file: str, attempts: int):
         self.file: str = file
-        self.copy_file: str = f"{os.path.abspath(os.curdir)}/{os.path.basename(file)}"
+        self.copy_file: str = f"{os.getcwd()}/{os.path.basename(file)}"
         self.attempts: int = attempts
 
     def download_file(self) -> float:
@@ -58,9 +58,13 @@ class DiskLoading:
         :param results: Список с результатами замеров.
         :return:
         """
-        with open(f"{os.path.dirname(self.copy_file)}/results.csv", 'w', newline='') as file:
-            writer: csv.writer = csv.writer(file)
-            writer.writerow(["Наименование файла", "Номер попытки", "Время скачивания", "Время чтения", "Время записи"])
+        file_path = os.path.join(os.path.dirname(self.copy_file), "results.csv")
+        with open(file_path, 'a', newline='') as file:
+            writer = csv.writer(file)
+            if os.stat(file_path).st_size == 0:
+                writer.writerow(
+                    ["Наименование файла", "Номер попытки", "Время скачивания", "Время чтения", "Время записи"]
+                )
             writer.writerows(results)
 
     def main(self) -> None:
