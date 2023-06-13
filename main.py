@@ -2,6 +2,7 @@ import os
 import csv
 import time
 import shutil
+from typing import Union
 
 
 class DiskLoading:
@@ -13,7 +14,7 @@ class DiskLoading:
         self.copy_file: str = f"{os.getcwd()}/{os.path.basename(file)}"
         self.attempts: int = attempts
 
-    def get_size(self, unit: str = 'bytes') -> float | int:
+    def get_size(self, unit: str = 'bytes') -> Union[float, int]:
         """
         Получение размера файла.
         :return: Получаем размер файла.
